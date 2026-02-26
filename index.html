@@ -231,4 +231,20 @@
       }
     });
     document.getElementById('obsGeral').value = "";
-    document.
+    document.getElementById('inputBusca').value = "";
+    document.getElementById('selectConferente').value = "";
+    document.querySelector('.scrollable-content').scrollTop = 0;
+  }
+
+  function confirmarEEnviar() {
+    const url = `https://api.whatsapp.com/send?phone=${MEU_WHATSAPP}&text=${encodeURIComponent(mensagemFinal)}`;
+    window.open(url, '_blank');
+    fecharRevisao();
+    setTimeout(limparFormulario, 1500); 
+  }
+
+  carregarDados();
+</script>
+
+</body>
+</html>
