@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conferência de Estoque</title>
   <style>
-    /* Configuração Geral para congelar Topo e Base */
     html, body { 
       margin: 0; padding: 0;
       height: 100%; overflow: hidden;
@@ -13,23 +12,31 @@
       background: #f0f2f5; color: #333;
     }
     
-    /* Cabeçalho Fixo */
+    /* Cabeçalho Fixo (Ajustado para a Logo e Busca) */
     .header-fixed { 
       position: fixed; top: 0; width: 100%;
       background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
       z-index: 100; padding: 10px 0;
     }
     .container { max-width: 500px; margin: auto; padding: 0 15px; }
-    h2 { color: #075E54; text-align: center; margin: 0 0 10px 0; font-size: 20px; }
-    .header-info { background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; font-size: 14px; }
     
-    select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
+    .logo-container { text-align: center; margin-bottom: 10px; }
+    .logo-container img { max-height: 50px; width: auto; }
 
-    /* Área de Produtos que Rola */
+    .header-info { background: #f9f9f9; padding: 8px; border-radius: 8px; border: 1px solid #eee; font-size: 13px; }
+    
+    select, textarea, .search-input { 
+      width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; 
+      font-size: 16px; box-sizing: border-box; margin-top: 5px;
+    }
+    
+    .search-input { background: #fff; margin-bottom: 5px; border: 1px solid #25D366; }
+
+    /* Área de Produtos (Ajustada a altura devido aos novos campos) */
     .scrollable-content { 
       position: absolute;
-      top: 145px; /* Altura do cabeçalho */
-      bottom: 90px; /* Altura do rodapé */
+      top: 225px; /* Altura do cabeçalho com logo e busca */
+      bottom: 90px; 
       left: 0; right: 0;
       overflow-y: auto; 
       padding: 10px 0;
@@ -38,19 +45,16 @@
     .item-row { 
       background: white; border-radius: 8px; margin-bottom: 8px; padding: 12px; 
       display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      transition: background 0.3s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.2s;
     }
 
-    /* Classe para destacar produtos preenchidos */
     .item-preenchido { background: #e8f5e9 !important; border: 1px solid #25D366; }
 
     .inputs-group { display: flex; gap: 8px; }
     .input-box { display: flex; flex-direction: column; align-items: center; }
-    .input-box label { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 2px; }
+    .input-box label { font-size: 10px; color: #888; text-transform: uppercase; }
     input[type="number"] { width: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 16px; }
 
-    /* Botão Fixo no Rodapé */
     .footer-fixed { 
       position: fixed; bottom: 0; width: 100%;
       background: white; border-top: 1px solid #ddd;
@@ -59,11 +63,9 @@
     .btn-enviar { 
       width: 90%; max-width: 470px; display: block; margin: auto; 
       padding: 16px; background: #25D366; color: white; 
-      border: none; border-radius: 8px; font-size: 18px; 
-      font-weight: bold; cursor: pointer;
+      border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer;
     }
 
-    /* Modal de Revisão */
     .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); }
     .modal-content { background: white; margin: 15% auto; padding: 20px; border-radius: 12px; width: 85%; max-width: 400px; max-height: 70vh; overflow-y: auto; }
     .revisao-texto { white-space: pre-wrap; background: #f4f4f4; padding: 12px; border-radius: 6px; font-size: 13px; margin: 15px 0; border: 1px solid #ddd; }
@@ -76,10 +78,18 @@
 
 <div class="header-fixed">
   <div class="container">
-    <h2>📦 Conferência Colméia</h2>
+    <div class="logo-container">
+      <img src="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png" alt="Logo Empresa">
+    </div>
+
     <div class="header-info">
-      <p style="margin: 0 0 5px 0;"><b>📅 Data:</b> <span id="dataAtual"></span></p>
-      <select id="selectConferente"><option value="">Carregando conferentes...</option></select>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <span><b>📅</b> <span id="dataAtual"></span></span>
+        <select id="selectConferente" style="width: 60%; padding: 5px; font-size: 13px; margin: 0;">
+          <option value="">👤 Conferente...</option>
+        </select>
+      </div>
+      <input type="text" id="inputBusca" class="search-input" placeholder="🔍 Buscar produto ou código..." onkeyup="filtrarProdutos()">
     </div>
   </div>
 </div>
@@ -89,8 +99,8 @@
     <div id="listaProdutos"><p style="text-align:center;">Buscando produtos...</p></div>
     
     <div style="margin: 15px 0;">
-      <label style="font-weight:bold; font-size:14px;">📝 Observações Gerais:</label>
-      <textarea id="obsGeral" rows="2" placeholder="Ex: Alguma observação sobre a carga..."></textarea>
+      <label style="font-weight:bold; font-size:14px;">📝 Observações:</label>
+      <textarea id="obsGeral" rows="2" placeholder="Notas da carga..."></textarea>
     </div>
   </div>
 </div>
@@ -119,17 +129,20 @@
 
   document.getElementById('dataAtual').innerText = new Date().toLocaleDateString('pt-BR');
 
-  // Função para mudar cor da linha quando preenchida
   function checkInput(index) {
     const qtd = document.getElementById(`qtd-${index}`).value;
     const qbr = document.getElementById(`qbr-${index}`).value;
     const row = document.getElementById(`row-${index}`);
-    
-    if (qtd > 0 || qbr > 0) {
-      row.classList.add('item-preenchido');
-    } else {
-      row.classList.remove('item-preenchido');
-    }
+    row.classList.toggle('item-preenchido', (qtd > 0 || qbr > 0));
+  }
+
+  function filtrarProdutos() {
+    const termo = document.getElementById('inputBusca').value.toLowerCase();
+    const rows = document.getElementsByClassName('item-row');
+    Array.from(rows).forEach(row => {
+      const texto = row.innerText.toLowerCase();
+      row.style.display = texto.includes(termo) ? "flex" : "none";
+    });
   }
 
   async function carregarDados() {
@@ -137,7 +150,6 @@
       const response = await fetch(SCRIPT_URL + "?get=produtos");
       const data = await response.json();
       const select = document.getElementById('selectConferente');
-      select.innerHTML = '<option value="">-- Selecione o Conferente --</option>';
       data.conferentes.forEach(nome => {
         let opt = document.createElement('option');
         opt.value = nome; opt.text = nome; select.appendChild(opt);
@@ -150,24 +162,18 @@
           <div class="item-row" id="row-${index}">
             <div style="flex:1"><b>${p.codigo}</b><br><small>${p.nome}</small></div>
             <div class="inputs-group">
-              <div class="input-box">
-                <label>Qtd</label>
-                <input type="number" id="qtd-${index}" oninput="checkInput(${index})" placeholder="0">
-              </div>
-              <div class="input-box">
-                <label>Qbra</label>
-                <input type="number" id="qbr-${index}" oninput="checkInput(${index})" placeholder="0">
-              </div>
+              <div class="input-box"><label>Qtd</label><input type="number" id="qtd-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box"><label>Qbra</label><input type="number" id="qbr-${index}" oninput="checkInput(${index})" placeholder="0"></div>
             </div>
           </div>`;
       });
-    } catch (e) { document.getElementById('listaProdutos').innerText = "Erro ao carregar dados."; }
+    } catch (e) { document.getElementById('listaProdutos').innerText = "Erro ao carregar."; }
   }
 
   function abrirRevisao() {
     const conferente = document.getElementById('selectConferente').value;
     const obs = document.getElementById('obsGeral').value;
-    if (!conferente) return alert("Selecione um conferente!");
+    if (!conferente) return alert("Selecione o conferente!");
 
     let msg = `*RELATÓRIO DE CONFERÊNCIA*\n`;
     msg += `📅 Data: ${document.getElementById('dataAtual').innerText}\n`;
@@ -195,16 +201,15 @@
   function fecharRevisao() { document.getElementById('modalRevisao').style.display = 'none'; }
 
   function limparFormulario() {
-    // Limpa Inputs de produtos e cores
     dadosProdutos.forEach((p, index) => {
       document.getElementById(`qtd-${index}`).value = "";
       document.getElementById(`qbr-${index}`).value = "";
       document.getElementById(`row-${index}`).classList.remove('item-preenchido');
+      document.getElementById(`row-${index}`).style.display = "flex";
     });
-    // Limpa Observação e Conferente
     document.getElementById('obsGeral').value = "";
+    document.getElementById('inputBusca').value = "";
     document.getElementById('selectConferente').value = "";
-    // Volta o scroll para o topo
     document.querySelector('.scrollable-content').scrollTop = 0;
   }
 
@@ -212,8 +217,6 @@
     const url = `https://api.whatsapp.com/send?phone=${MEU_WHATSAPP}&text=${encodeURIComponent(mensagemFinal)}`;
     window.open(url, '_blank');
     fecharRevisao();
-    
-    // Limpa a página para a próxima conferência
     setTimeout(limparFormulario, 1000); 
   }
 
