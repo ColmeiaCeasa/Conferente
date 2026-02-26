@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conferência de Estoque</title>
+  <title>Conferência Digital Colméia</title>
   <style>
     html, body { 
       margin: 0; padding: 0;
@@ -12,6 +12,7 @@
       background: #f0f2f5; color: #333;
     }
     
+    /* Cabeçalho Fixo */
     .header-fixed { 
       position: fixed; top: 0; width: 100%;
       background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
@@ -19,14 +20,18 @@
     }
     .container { max-width: 500px; margin: auto; padding: 0 15px; }
     
-    .logo-container { text-align: center; margin-bottom: 8px; }
-    .logo-container img { max-height: 45px; width: auto; }
+    .logo-container { text-align: center; margin-bottom: 5px; }
+    .logo-container img { max-height: 80px; width: auto; } /* Logo aumentada */
+
+    h1 { 
+      color: #075E54; font-size: 18px; text-align: center; 
+      margin: 5px 0 10px 0; font-weight: bold; 
+    }
 
     .header-info { background: #f9f9f9; padding: 8px; border-radius: 8px; border: 1px solid #eee; font-size: 13px; }
     
     select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
     
-    /* Container da Busca com botão de limpar */
     .search-container { position: relative; margin-top: 8px; }
     .search-input { 
       width: 100%; padding: 10px 35px 10px 10px; border-radius: 6px; 
@@ -35,14 +40,14 @@
     .btn-clear-search {
       position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
       background: #ccc; color: white; border: none; border-radius: 50%;
-      width: 20px; height: 20px; font-size: 12px; cursor: pointer;
+      width: 22px; height: 22px; font-size: 12px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      line-height: 1; font-weight: bold;
     }
 
+    /* Ajuste da altura para não cobrir os produtos devido ao título novo */
     .scrollable-content { 
       position: absolute;
-      top: 220px; /* Ajuste conforme o tamanho da sua logo */
+      top: 260px; 
       bottom: 90px; 
       left: 0; right: 0;
       overflow-y: auto; 
@@ -86,13 +91,15 @@
 <div class="header-fixed">
   <div class="container">
     <div class="logo-container">
-      <img src="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png" alt="Logo Empresa">
+      <img src="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png" alt="Logo Colméia">
     </div>
+
+    <h1>Conferência Digital Colméia</h1>
 
     <div class="header-info">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span><b>📅</b> <span id="dataAtual"></span></span>
-        <select id="selectConferente" style="width: 65%; padding: 5px; font-size: 13px;">
+        <span><b>📅</b> <span id="dataHoraAtual"></span></span>
+        <select id="selectConferente" style="width: 55%; padding: 5px; font-size: 13px;">
           <option value="">👤 Conferente...</option>
         </select>
       </div>
@@ -138,7 +145,14 @@
   let dadosProdutos = [];
   let mensagemFinal = "";
 
-  document.getElementById('dataAtual').innerText = new Date().toLocaleDateString('pt-BR');
+  function atualizarDataHora() {
+    const agora = new Date();
+    const formato = agora.toLocaleDateString('pt-BR') + " " + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+    document.getElementById('dataHoraAtual').innerText = formato;
+  }
+  
+  atualizarDataHora();
+  setInterval(atualizarDataHora, 60000);
 
   function checkInput(index) {
     const qtd = document.getElementById(`qtd-${index}`).value;
@@ -193,8 +207,11 @@
     const obs = document.getElementById('obsGeral').value;
     if (!conferente) return alert("Selecione o conferente!");
 
+    const dataHoraFinal = document.getElementById('dataHoraAtual').innerText;
+
     let msg = `*RELATÓRIO DE CONFERÊNCIA*\n`;
-    msg += `📅 Data: ${document.getElementById('dataAtual').innerText}\n`;
+    msg += `🏢 *CONFERÊNCIA DIGITAL COLMÉIA*\n`;
+    msg += `📅 Data/Hora: ${dataHoraFinal}\n`;
     msg += `👤 Conferente: ${conferente}\n`;
     msg += `----------------------------\n\n`;
 
