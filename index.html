@@ -12,7 +12,6 @@
       background: #f0f2f5; color: #333;
     }
     
-    /* Cabeçalho Fixo (Ajustado para a Logo e Busca) */
     .header-fixed { 
       position: fixed; top: 0; width: 100%;
       background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
@@ -20,22 +19,30 @@
     }
     .container { max-width: 500px; margin: auto; padding: 0 15px; }
     
-    .logo-container { text-align: center; margin-bottom: 10px; }
-    .logo-container img { max-height: 50px; width: auto; }
+    .logo-container { text-align: center; margin-bottom: 8px; }
+    .logo-container img { max-height: 45px; width: auto; }
 
     .header-info { background: #f9f9f9; padding: 8px; border-radius: 8px; border: 1px solid #eee; font-size: 13px; }
     
-    select, textarea, .search-input { 
-      width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; 
-      font-size: 16px; box-sizing: border-box; margin-top: 5px;
-    }
+    select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
     
-    .search-input { background: #fff; margin-bottom: 5px; border: 1px solid #25D366; }
+    /* Container da Busca com botão de limpar */
+    .search-container { position: relative; margin-top: 8px; }
+    .search-input { 
+      width: 100%; padding: 10px 35px 10px 10px; border-radius: 6px; 
+      border: 1px solid #25D366; font-size: 16px; box-sizing: border-box;
+    }
+    .btn-clear-search {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: #ccc; color: white; border: none; border-radius: 50%;
+      width: 20px; height: 20px; font-size: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1; font-weight: bold;
+    }
 
-    /* Área de Produtos (Ajustada a altura devido aos novos campos) */
     .scrollable-content { 
       position: absolute;
-      top: 225px; /* Altura do cabeçalho com logo e busca */
+      top: 220px; /* Ajuste conforme o tamanho da sua logo */
       bottom: 90px; 
       left: 0; right: 0;
       overflow-y: auto; 
@@ -79,17 +86,21 @@
 <div class="header-fixed">
   <div class="container">
     <div class="logo-container">
-      <img src="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png" alt="Logo Empresa">
+      <img src="https://via.placeholder.com/150x50?text=SUA+LOGO" alt="Logo Empresa">
     </div>
 
     <div class="header-info">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
         <span><b>📅</b> <span id="dataAtual"></span></span>
-        <select id="selectConferente" style="width: 60%; padding: 5px; font-size: 13px; margin: 0;">
+        <select id="selectConferente" style="width: 65%; padding: 5px; font-size: 13px;">
           <option value="">👤 Conferente...</option>
         </select>
       </div>
-      <input type="text" id="inputBusca" class="search-input" placeholder="🔍 Buscar produto ou código..." onkeyup="filtrarProdutos()">
+      
+      <div class="search-container">
+        <input type="text" id="inputBusca" class="search-input" placeholder="🔍 Buscar produto ou código..." onkeyup="filtrarProdutos()">
+        <button class="btn-clear-search" onclick="limparBusca()">✕</button>
+      </div>
     </div>
   </div>
 </div>
@@ -143,6 +154,13 @@
       const texto = row.innerText.toLowerCase();
       row.style.display = texto.includes(termo) ? "flex" : "none";
     });
+  }
+
+  function limparBusca() {
+    const input = document.getElementById('inputBusca');
+    input.value = "";
+    filtrarProdutos();
+    input.focus();
   }
 
   async function carregarDados() {
@@ -202,26 +220,15 @@
 
   function limparFormulario() {
     dadosProdutos.forEach((p, index) => {
-      document.getElementById(`qtd-${index}`).value = "";
-      document.getElementById(`qbr-${index}`).value = "";
-      document.getElementById(`row-${index}`).classList.remove('item-preenchido');
-      document.getElementById(`row-${index}`).style.display = "flex";
+      const q = document.getElementById(`qtd-${index}`);
+      const b = document.getElementById(`qbr-${index}`);
+      if(q) q.value = "";
+      if(b) b.value = "";
+      const row = document.getElementById(`row-${index}`);
+      if(row) {
+        row.classList.remove('item-preenchido');
+        row.style.display = "flex";
+      }
     });
     document.getElementById('obsGeral').value = "";
-    document.getElementById('inputBusca').value = "";
-    document.getElementById('selectConferente').value = "";
-    document.querySelector('.scrollable-content').scrollTop = 0;
-  }
-
-  function confirmarEEnviar() {
-    const url = `https://api.whatsapp.com/send?phone=${MEU_WHATSAPP}&text=${encodeURIComponent(mensagemFinal)}`;
-    window.open(url, '_blank');
-    fecharRevisao();
-    setTimeout(limparFormulario, 1000); 
-  }
-
-  carregarDados();
-</script>
-
-</body>
-</html>
+    document.
