@@ -21,7 +21,7 @@
     .container { max-width: 500px; margin: auto; padding: 0 15px; }
     
     .logo-container { text-align: center; margin-bottom: 5px; }
-    .logo-container img { max-height: 80px; width: auto; } /* Logo aumentada */
+    .logo-container img { max-height: 80px; width: auto; }
 
     h1 { 
       color: #075E54; font-size: 18px; text-align: center; 
@@ -44,7 +44,6 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* Ajuste da altura para não cobrir os produtos devido ao título novo */
     .scrollable-content { 
       position: absolute;
       top: 260px; 
@@ -60,12 +59,14 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.2s;
     }
 
+    /* Cores de Destaque */
     .item-preenchido { background: #e8f5e9 !important; border: 1px solid #25D366; }
+    .input-quebra-ativa { background-color: #ffebee !important; border: 2px solid #d32f2f !important; color: #d32f2f; font-weight: bold; }
 
     .inputs-group { display: flex; gap: 8px; }
     .input-box { display: flex; flex-direction: column; align-items: center; }
     .input-box label { font-size: 10px; color: #888; text-transform: uppercase; }
-    input[type="number"] { width: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 16px; }
+    input[type="number"] { width: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 16px; transition: 0.3s; }
 
     .footer-fixed { 
       position: fixed; bottom: 0; width: 100%;
@@ -156,9 +157,19 @@
 
   function checkInput(index) {
     const qtd = document.getElementById(`qtd-${index}`).value;
-    const qbr = document.getElementById(`qbr-${index}`).value;
+    const qbrInput = document.getElementById(`qbr-${index}`);
+    const qbrValue = qbrInput.value;
     const row = document.getElementById(`row-${index}`);
-    row.classList.toggle('item-preenchido', (qtd > 0 || qbr > 0));
+    
+    // Destaca a linha se houver qualquer valor
+    row.classList.toggle('item-preenchido', (qtd > 0 || qbrValue > 0));
+    
+    // Destaca o campo de quebra em vermelho se houver quebra
+    if (qbrValue > 0) {
+      qbrInput.classList.add('input-quebra-ativa');
+    } else {
+      qbrInput.classList.remove('input-quebra-ativa');
+    }
   }
 
   function filtrarProdutos() {
@@ -240,7 +251,10 @@
       const q = document.getElementById(`qtd-${index}`);
       const b = document.getElementById(`qbr-${index}`);
       if(q) q.value = "";
-      if(b) b.value = "";
+      if(b) {
+        b.value = "";
+        b.classList.remove('input-quebra-ativa');
+      }
       const row = document.getElementById(`row-${index}`);
       if(row) {
         row.classList.remove('item-preenchido');
