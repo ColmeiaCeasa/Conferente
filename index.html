@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#075E54">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png">
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/VNQ8ywFQ/Sem-titulo-1.png">
   <link rel="apple-touch-icon" href="https://i.postimg.cc/VNQ8ywFQ/Sem-titulo-1.png">
 
   <style>
@@ -19,7 +19,6 @@
       background: #f0f2f5; color: #333;
     }
     
-    /* Cabeçalho Fixo */
     .header-fixed { 
       position: fixed; top: 0; width: 100%;
       background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
@@ -51,7 +50,6 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* ESTILOS DAS ABAS */
     .tabs-container { display: flex; background: white; border-top: 1px solid #eee; }
     .tab-btn { 
       flex: 1; padding: 12px; border: none; background: transparent; 
@@ -60,7 +58,6 @@
     }
     .tab-btn.active { color: #075E54; border-bottom: 3px solid #25D366; background: #f0fdf4; }
 
-    /* Lógica de exibição baseada na aba ativa */
     .modo-estoque .box-quebra { display: none !important; }
     .modo-quebra .box-estoque { display: none !important; }
 
@@ -99,7 +96,7 @@
     }
 
     .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); }
-    .modal-content { background: white; margin: 15% auto; padding: 20px; border-radius: 12px; width: 85%; max-width: 400px; max-height: 70vh; overflow-y: auto; }
+    .modal-content { background: white; margin: 15% auto; padding: 20px; border-radius: 12px; width: 85%; max-width: 400px; max-height: 85vh; overflow-y: auto; }
     .revisao-texto { white-space: pre-wrap; background: #f4f4f4; padding: 12px; border-radius: 6px; font-size: 13px; margin: 15px 0; border: 1px solid #ddd; }
     .modal-btns { display: flex; gap: 10px; }
     .btn-confirmar { flex: 2; background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; }
@@ -156,16 +153,16 @@
   <div class="modal-content">
     <h3 style="margin-top:0">Revisar Relatório</h3>
     <div id="corpoRevisao" class="revisao-texto"></div>
+
     <div class="modal-btns">
       <button class="btn-corrigir" onclick="fecharRevisao()">Alterar</button>
-      <button class="btn-confirmar" onclick="confirmarEEnviar()">Confirmar</button>
+      <button class="btn-confirmar" onclick="confirmarEEnviar()">Confirmar no App</button>
     </div>
   </div>
 </div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhTl3okNtfIJgyjdZl34x0Kw8nssJfOC7dqChaIsV1GIZx3j5iU5vZhYLe1WryQ3L4gA/exec";
-  const MEU_WHATSAPP = "5516991251990";
 
   let dadosProdutos = [];
   let mensagemFinal = "";
@@ -306,26 +303,20 @@
     document.getElementById('inputBusca').value = "";
     document.getElementById('selectConferente').value = "";
     
-    // Rola para o topo
     document.querySelector('.scrollable-content').scrollTop = 0;
-    
-    // Retorna para a aba de estoque
     mudarAba('estoque');
   }
 
   function confirmarEEnviar() {
-    const url = `https://api.whatsapp.com/send?phone=${MEU_WHATSAPP}&text=${encodeURIComponent(mensagemFinal)}`;
+    // Ao remover o &phone= da URL, o WhatsApp abre e permite escolher o contato na hora.
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemFinal)}`;
     
-    // Abre o WhatsApp
     window.open(url, '_blank');
-    
-    // Fecha o modal imediatamente
     fecharRevisao();
     
-    // Aguarda um breve momento e recarrega/limpa a tela para a página inicial
     setTimeout(() => {
       limparFormulario();
-      window.scrollTo(0, 0); // Garante que a página volte pro topo no celular
+      window.scrollTo(0, 0); 
     }, 1000); 
   }
 
