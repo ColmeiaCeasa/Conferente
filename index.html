@@ -2,8 +2,15 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Conferência Digital Colméia</title>
+  
+  <meta name="theme-color" content="#075E54">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png">
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png">
+
   <style>
     html, body { 
       margin: 0; padding: 0;
@@ -16,7 +23,7 @@
     .header-fixed { 
       position: fixed; top: 0; width: 100%;
       background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-      z-index: 100; padding: 10px 0;
+      z-index: 100; padding: 10px 0 0 0; 
     }
     .container { max-width: 500px; margin: auto; padding: 0 15px; }
     
@@ -28,7 +35,7 @@
       margin: 5px 0 10px 0; font-weight: bold; 
     }
 
-    .header-info { background: #f9f9f9; padding: 8px; border-radius: 8px; border: 1px solid #eee; font-size: 13px; }
+    .header-info { background: #f9f9f9; padding: 8px; border-radius: 8px; border: 1px solid #eee; font-size: 13px; margin-bottom: 10px; }
     
     select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
     
@@ -44,9 +51,22 @@
       display: flex; align-items: center; justify-content: center;
     }
 
+    /* ESTILOS DAS ABAS */
+    .tabs-container { display: flex; background: white; border-top: 1px solid #eee; }
+    .tab-btn { 
+      flex: 1; padding: 12px; border: none; background: transparent; 
+      font-size: 15px; font-weight: bold; color: #888; cursor: pointer; 
+      border-bottom: 3px solid transparent; transition: all 0.3s;
+    }
+    .tab-btn.active { color: #075E54; border-bottom: 3px solid #25D366; background: #f0fdf4; }
+
+    /* Lógica de exibição baseada na aba ativa */
+    .modo-estoque .box-quebra { display: none !important; }
+    .modo-quebra .box-estoque { display: none !important; }
+
     .scrollable-content { 
       position: absolute;
-      top: 260px; 
+      top: 300px; 
       bottom: 90px; 
       left: 0; right: 0;
       overflow-y: auto; 
@@ -59,14 +79,13 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.2s;
     }
 
-    /* Cores de Destaque */
     .item-preenchido { background: #e8f5e9 !important; border: 1px solid #25D366; }
     .input-quebra-ativa { background-color: #ffebee !important; border: 2px solid #d32f2f !important; color: #d32f2f; font-weight: bold; }
 
     .inputs-group { display: flex; gap: 8px; }
     .input-box { display: flex; flex-direction: column; align-items: center; }
-    .input-box label { font-size: 10px; color: #888; text-transform: uppercase; }
-    input[type="number"] { width: 65px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 16px; transition: 0.3s; }
+    .input-box label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; }
+    input[type="number"] { width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 16px; transition: 0.3s; }
 
     .footer-fixed { 
       position: fixed; bottom: 0; width: 100%;
@@ -111,11 +130,16 @@
       </div>
     </div>
   </div>
+  
+  <div class="tabs-container">
+    <button class="tab-btn active" id="btnEstoque" onclick="mudarAba('estoque')">📦 Estoque</button>
+    <button class="tab-btn" id="btnQuebra" onclick="mudarAba('quebra')">⚠️ Quebra</button>
+  </div>
 </div>
 
 <div class="scrollable-content">
   <div class="container">
-    <div id="listaProdutos"><p style="text-align:center;">Buscando produtos...</p></div>
+    <div id="listaProdutos" class="modo-estoque"><p style="text-align:center;">Buscando produtos...</p></div>
     
     <div style="margin: 15px 0;">
       <label style="font-weight:bold; font-size:14px;">📝 Observações:</label>
@@ -154,6 +178,22 @@
   
   atualizarDataHora();
   setInterval(atualizarDataHora, 60000);
+
+  function mudarAba(aba) {
+    const lista = document.getElementById('listaProdutos');
+    const btnEstoque = document.getElementById('btnEstoque');
+    const btnQuebra = document.getElementById('btnQuebra');
+
+    if (aba === 'estoque') {
+      lista.className = 'modo-estoque';
+      btnEstoque.classList.add('active');
+      btnQuebra.classList.remove('active');
+    } else {
+      lista.className = 'modo-quebra';
+      btnQuebra.classList.add('active');
+      btnEstoque.classList.remove('active');
+    }
+  }
 
   function checkInput(index) {
     const estoque = document.getElementById(`estoque-${index}`).value;
@@ -203,8 +243,8 @@
           <div class="item-row" id="row-${index}">
             <div style="flex:1"><b>${p.codigo}</b><br><small>${p.nome}</small></div>
             <div class="inputs-group">
-              <div class="input-box"><label>Estoque</label><input type="number" id="estoque-${index}" oninput="checkInput(${index})" placeholder="0"></div>
-              <div class="input-box"><label>Quebra</label><input type="number" id="qbr-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-estoque"><label>Estoque</label><input type="number" id="estoque-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-quebra"><label>Quebra</label><input type="number" id="qbr-${index}" oninput="checkInput(${index})" placeholder="0"></div>
             </div>
           </div>`;
       });
@@ -230,7 +270,10 @@
       const b = document.getElementById(`qbr-${index}`).value || 0;
       if (e > 0 || b > 0) {
         temDados = true;
-        msg += `📦 *${p.nome}*\nEstoque: ${e} | Quebra: ${b}\n\n`;
+        msg += `📦 *${p.nome}*\n`;
+        if (e > 0) msg += `Estoque: ${e} `;
+        if (b > 0) msg += `| Quebra: ${b}`;
+        msg += `\n\n`;
       }
     });
 
@@ -262,14 +305,28 @@
     document.getElementById('obsGeral').value = "";
     document.getElementById('inputBusca').value = "";
     document.getElementById('selectConferente').value = "";
+    
+    // Rola para o topo
     document.querySelector('.scrollable-content').scrollTop = 0;
+    
+    // Retorna para a aba de estoque
+    mudarAba('estoque');
   }
 
   function confirmarEEnviar() {
     const url = `https://api.whatsapp.com/send?phone=${MEU_WHATSAPP}&text=${encodeURIComponent(mensagemFinal)}`;
+    
+    // Abre o WhatsApp
     window.open(url, '_blank');
+    
+    // Fecha o modal imediatamente
     fecharRevisao();
-    setTimeout(limparFormulario, 1500); 
+    
+    // Aguarda um breve momento e recarrega/limpa a tela para a página inicial
+    setTimeout(() => {
+      limparFormulario();
+      window.scrollTo(0, 0); // Garante que a página volte pro topo no celular
+    }, 1000); 
   }
 
   carregarDados();
