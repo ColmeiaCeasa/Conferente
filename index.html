@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#075E54">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/VNQ8ywFQ/Sem-titulo-1.png">
-  <link rel="apple-touch-icon" href="https://i.postimg.cc/VNQ8ywFQ/Sem-titulo-1.png">
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png">
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/Mp43sV46/LOGO-COLMEIA.png">
 
   <style>
     html, body { 
@@ -257,3 +257,125 @@
       const data = await response.json();
       const select = document.getElementById('selectConferente');
       data.conferentes.forEach(nome => {
+        let opt = document.createElement('option');
+        opt.value = nome; opt.text = nome; select.appendChild(opt);
+      });
+      dadosProdutos = data.produtos;
+      const lista = document.getElementById('listaProdutos');
+      lista.innerHTML = '';
+      
+      dadosProdutos.forEach((p, index) => {
+        lista.innerHTML += `
+          <div class="item-row" id="row-${index}">
+            <div style="flex:1"><b>${p.codigo}</b><br><small>${p.nome}</small></div>
+            <div class="inputs-group">
+              <div class="input-box box-estoque"><label>Estoque</label><input type="number" id="estoque-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-entrada"><label>Entrada</label><input type="number" id="ent-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-saida"><label>Saída</label><input type="number" id="sai-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-reposicao"><label>Reposição</label><input type="number" id="rep-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-quebra"><label>Quebra</label><input type="number" id="qbr-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+            </div>
+          </div>`;
+      });
+    } catch (e) { document.getElementById('listaProdutos').innerText = "Erro ao carregar."; }
+  }
+
+  function abrirRevisao() {
+    const conferente = document.getElementById('selectConferente').value;
+    const obs = document.getElementById('obsGeral').value;
+    if (!conferente) return alert("Selecione o conferente!");
+
+    const dataHoraFinal = document.getElementById('dataHoraAtual').innerText;
+
+    let msg = `*RELATÓRIO DE CONFERÊNCIA*\n`;
+    msg += `🏢 *CONFERÊNCIA DIGITAL COLMÉIA*\n`;
+    msg += `📅 Data/Hora: ${dataHoraFinal}\n`;
+    msg += `👤 Conferente: ${conferente}\n`;
+    msg += `----------------------------\n\n`;
+
+    let temDados = false;
+    dadosProdutos.forEach((p, index) => {
+      const e = document.getElementById(`estoque-${index}`).value || 0;
+      const en = document.getElementById(`ent-${index}`).value || 0;
+      const sa = document.getElementById(`sai-${index}`).value || 0;
+      const r = document.getElementById(`rep-${index}`).value || 0;
+      const b = document.getElementById(`qbr-${index}`).value || 0;
+      
+      if (e > 0 || en > 0 || sa > 0 || r > 0 || b > 0) {
+        temDados = true;
+        msg += `📦 *${p.nome}*\n`;
+        
+        let infos = [];
+        if (e > 0) infos.push(`Estoque: ${e}`);
+        if (en > 0) infos.push(`Entrada: ${en}`);
+        if (sa > 0) infos.push(`Saída: ${sa}`);
+        if (r > 0) infos.push(`Reposição: ${r}`);
+        if (b > 0) infos.push(`Quebra: ${b}`);
+        
+        msg += infos.join(" | ") + `\n\n`; 
+      }
+    });
+
+    if (obs) msg += `📝 *Obs:* ${obs}\n`;
+    if (!temDados) return alert("Preencha ao menos um item!");
+
+    mensagemFinal = msg;
+    document.getElementById('corpoRevisao').innerText = msg;
+    document.getElementById('modalRevisao').style.display = 'block';
+  }
+
+  function fecharRevisao() { document.getElementById('modalRevisao').style.display = 'none'; }
+
+  function limparFormulario() {
+    dadosProdutos.forEach((p, index) => {
+      const e = document.getElementById(`estoque-${index}`);
+      const en = document.getElementById(`ent-${index}`);
+      const sa = document.getElementById(`sai-${index}`);
+      const r = document.getElementById(`rep-${index}`);
+      const b = document.getElementById(`qbr-${index}`);
+      
+      if(e) e.value = "";
+      if(en) en.value = "";
+      if(sa) sa.value = "";
+      if(r) r.value = "";
+      
+      if(b) {
+        b.value = "";
+        b.classList.remove('input-quebra-ativa');
+      }
+      const row = document.getElementById(`row-${index}`);
+      if(row) {
+        row.classList.remove('item-preenchido');
+      }
+    });
+    
+    document.getElementById('obsGeral').value = "";
+    document.getElementById('inputBusca').value = "";
+    document.getElementById('selectConferente').value = "";
+    
+    document.querySelector('.scrollable-content').scrollTop = 0;
+    mudarAba('estoque'); 
+  }
+
+  function confirmarLimpeza() {
+    if(confirm("⚠️ Tem certeza que deseja apagar todos os dados preenchidos? Essa ação não pode ser desfeita.")) {
+      limparFormulario();
+    }
+  }
+
+  function confirmarEEnviar() {
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemFinal)}`;
+    
+    fecharRevisao();
+    
+    limparFormulario();
+    window.scrollTo(0, 0);
+    
+    window.location.href = url;
+  }
+
+  carregarDados();
+</script>
+
+</body>
+</html>
