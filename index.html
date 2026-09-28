@@ -51,7 +51,6 @@
     }
 
     .tabs-container { display: flex; background: white; border-top: 1px solid #eee; }
-    /* Ajuste da fonte para caberem 5 abas */
     .tab-btn { 
       flex: 1; padding: 6px 1px; border: none; background: transparent; 
       font-size: 11px; font-weight: bold; color: #888; cursor: pointer; 
@@ -115,8 +114,8 @@
     .modal-content { background: white; margin: 15% auto; padding: 20px; border-radius: 12px; width: 85%; max-width: 400px; max-height: 85vh; overflow-y: auto; }
     .revisao-texto { white-space: pre-wrap; background: #f4f4f4; padding: 12px; border-radius: 6px; font-size: 13px; margin: 15px 0; border: 1px solid #ddd; }
     .modal-btns { display: flex; gap: 10px; }
-    .btn-confirmar { flex: 2; background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; }
-    .btn-corrigir { flex: 1; background: #666; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; }
+    .btn-confirmar { flex: 2; background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .btn-corrigir { flex: 1; background: #666; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -165,7 +164,9 @@
 
 <div class="scrollable-content">
   <div class="container">
-    <div id="listaProdutos" class="modo-estoque"><p style="text-align:center;">Buscando produtos...</p></div>
+    <div id="listaProdutos" class="modo-estoque">
+      <p style="text-align:center;">⏳ Buscando produtos...</p>
+    </div>
   </div>
 </div>
 
@@ -192,6 +193,7 @@
 </div>
 
 <script>
+  // SUBSTITUA PELA URL DA SUA NOVA IMPLANTAÇÃO DO APPS SCRIPT
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxG-yhZBx2hFTRAGtJB4janzWijUHeAnHs1PsRsJFB4gJrlcDoYycQ8EYpOZbB_DfsS/exec";
 
   let dadosProdutos = [];
@@ -252,32 +254,66 @@
   }
 
   async function carregarDados() {
+    const lista = document.getElementById('listaProdutos');
+    const select = document.getElementById('selectConferente');
+
     try {
-      const response = await fetch(SCRIPT_URL + "?get=produtos");
-      const data = await response.json();
-      const select = document.getElementById('selectConferente');
-      data.conferentes.forEach(nome => {
-        let opt = document.createElement('option');
-        opt.value = nome; opt.text = nome; select.appendChild(opt);
+      lista.innerHTML = `<p style="text-align:center;">⏳ Carregando produtos...</p>`;
+      
+      // Ajuste com { method: "GET", redirect: "follow" } para compatibilidade com celulares e webviews
+      const response = await fetch(SCRIPT_URL + "?get=produtos", {
+        method: "GET",
+        redirect: "follow"
       });
-      dadosProdutos = data.produtos;
-      const lista = document.getElementById('listaProdutos');
+
+      if (!response.ok) {
+        throw new Error(`Status de resposta: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Limpa e popula select de conferentes
+      select.innerHTML = '<option value="">👤 Conferente...</option>';
+      if (data.conferentes && Array.isArray(data.conferentes)) {
+        data.conferentes.forEach(nome => {
+          let opt = document.createElement('option');
+          opt.value = nome; 
+          opt.text = nome; 
+          select.appendChild(opt);
+        });
+      }
+
+      // Popula a lista de produtos
+      dadosProdutos = data.produtos || [];
       lista.innerHTML = '';
       
+      if (dadosProdutos.length === 0) {
+        lista.innerHTML = '<p style="text-align:center;">Nenhum produto encontrado na planilha.</p>';
+        return;
+      }
+
       dadosProdutos.forEach((p, index) => {
         lista.innerHTML += `
           <div class="item-row" id="row-${index}">
             <div style="flex:1"><b>${p.codigo}</b><br><small>${p.nome}</small></div>
             <div class="inputs-group">
-              <div class="input-box box-estoque"><label>Estoque</label><input type="number" id="estoque-${index}" oninput="checkInput(${index})" placeholder="0"></div>
-              <div class="input-box box-entrada"><label>Entrada</label><input type="number" id="ent-${index}" oninput="checkInput(${index})" placeholder="0"></div>
-              <div class="input-box box-saida"><label>Saída</label><input type="number" id="sai-${index}" oninput="checkInput(${index})" placeholder="0"></div>
-              <div class="input-box box-reposicao"><label>Reposição</label><input type="number" id="rep-${index}" oninput="checkInput(${index})" placeholder="0"></div>
-              <div class="input-box box-quebra"><label>Quebra</label><input type="number" id="qbr-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-estoque"><label>Estoque</label><input type="number" min="0" id="estoque-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-entrada"><label>Entrada</label><input type="number" min="0" id="ent-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-saida"><label>Saída</label><input type="number" min="0" id="sai-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-reposicao"><label>Reposição</label><input type="number" min="0" id="rep-${index}" oninput="checkInput(${index})" placeholder="0"></div>
+              <div class="input-box box-quebra"><label>Quebra</label><input type="number" min="0" id="qbr-${index}" oninput="checkInput(${index})" placeholder="0"></div>
             </div>
           </div>`;
       });
-    } catch (e) { document.getElementById('listaProdutos').innerText = "Erro ao carregar."; }
+    } catch (e) { 
+      console.error("Erro no carregamento:", e);
+      lista.innerHTML = `
+        <div style="text-align:center; padding:20px; color:#d32f2f;">
+          <p><b>⚠️ Erro ao carregar dados!</b></p>
+          <small>Verifique se o Apps Script foi implantado como <b>"Qualquer pessoa"</b> e se uma <b>Nova versão</b> foi gerada.</small><br><br>
+          <button onclick="carregarDados()" style="padding:8px 16px; background:#075E54; color:white; border:none; border-radius:4px; cursor:pointer;">Tentar Novamente</button>
+        </div>`; 
+    }
   }
 
   function abrirRevisao() {
@@ -367,7 +403,6 @@
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemFinal)}`;
     
     fecharRevisao();
-    
     limparFormulario();
     window.scrollTo(0, 0);
     
