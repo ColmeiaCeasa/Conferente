@@ -22,43 +22,46 @@
     .header-fixed { 
       position: fixed; top: 0; width: 100%;
       background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-      z-index: 100; padding: 5px 0 0 0; 
+      z-index: 100; padding: 4px 0 0 0; 
     }
-    .container { max-width: 500px; margin: auto; padding: 0 15px; }
+    .container { max-width: 500px; margin: auto; padding: 0 10px; }
     
     .logo-container { text-align: center; margin-bottom: 0px; }
-    .logo-container img { max-height: 40px; width: auto; }
+    .logo-container img { max-height: 26px; width: auto; }
 
     h1 { 
-      color: #075E54; font-size: 16px; text-align: center; 
-      margin: 2px 0 5px 0; font-weight: bold; 
+      color: #075E54; font-size: 13px; text-align: center; 
+      margin: 1px 0 3px 0; font-weight: bold; 
     }
 
-    .header-info { background: #f9f9f9; padding: 6px; border-radius: 6px; border: 1px solid #eee; font-size: 13px; margin-bottom: 5px; }
+    .header-info { 
+      background: #f9f9f9; padding: 4px 6px; border-radius: 6px; 
+      border: 1px solid #eee; font-size: 11px; margin-bottom: 4px; 
+    }
     
-    select, textarea { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 15px; box-sizing: border-box; }
+    select, textarea { width: 100%; padding: 5px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; box-sizing: border-box; }
     
-    .search-container { position: relative; margin-top: 5px; }
+    .search-container { position: relative; margin-top: 3px; }
     .search-input { 
-      width: 100%; padding: 8px 35px 8px 10px; border-radius: 6px; 
-      border: 1px solid #25D366; font-size: 15px; box-sizing: border-box;
+      width: 100%; padding: 5px 30px 5px 8px; border-radius: 6px; 
+      border: 1px solid #25D366; font-size: 13px; box-sizing: border-box;
     }
     .btn-clear-search {
-      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
       background: #ccc; color: white; border: none; border-radius: 50%;
-      width: 22px; height: 22px; font-size: 12px; cursor: pointer;
+      width: 18px; height: 18px; font-size: 10px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
     }
 
     .tabs-container { display: flex; background: white; border-top: 1px solid #eee; }
     .tab-btn { 
-      flex: 1; padding: 6px 1px; border: none; background: transparent; 
-      font-size: 11px; font-weight: bold; color: #888; cursor: pointer; 
+      flex: 1; padding: 4px 1px; border: none; background: transparent; 
+      font-size: 10px; font-weight: bold; color: #888; cursor: pointer; 
       border-bottom: 3px solid transparent; transition: all 0.3s;
-      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      display: flex; flex-direction: column; align-items: center; gap: 1px;
     }
     .tab-btn.active { color: #075E54; border-bottom: 3px solid #25D366; background: #f0fdf4; }
-    .tab-icon { font-size: 14px; } 
+    .tab-icon { font-size: 12px; } 
 
     /* Lógica das 5 abas */
     .modo-estoque .box-entrada, .modo-estoque .box-saida, .modo-estoque .box-reposicao, .modo-estoque .box-quebra { display: none !important; }
@@ -69,53 +72,55 @@
 
     .scrollable-content { 
       position: absolute;
-      top: 200px; 
-      bottom: 210px; 
+      top: 135px; 
+      bottom: 125px; 
       left: 0; right: 0;
       overflow-y: auto; 
-      padding: 10px 0;
+      padding: 6px 0;
     }
 
     .item-row { 
-      background: white; border-radius: 8px; margin-bottom: 8px; padding: 10px 12px; 
+      background: white; border-radius: 6px; margin-bottom: 4px; padding: 6px 10px; 
       display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;
+      font-size: 13px;
     }
 
     .item-preenchido { background: #e8f5e9 !important; border: 1px solid #25D366; }
     .input-quebra-ativa { background-color: #ffebee !important; border: 2px solid #d32f2f !important; color: #d32f2f; font-weight: bold; }
 
-    .inputs-group { display: flex; gap: 8px; }
+    .inputs-group { display: flex; gap: 6px; }
     .input-box { display: flex; flex-direction: column; align-items: center; }
-    .input-box label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: bold; }
-    input[type="number"] { width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 16px; transition: 0.3s; }
+    .input-box label { font-size: 9px; color: #888; text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
+    input[type="number"] { width: 65px; padding: 5px; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-size: 14px; transition: 0.3s; }
 
     .footer-fixed { 
       position: fixed; bottom: 0; width: 100%;
       background: white; border-top: 1px solid #ddd;
-      padding: 10px 0 15px 0; z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+      padding: 6px 0 8px 0; z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
     }
     .btn-enviar { 
       width: 90%; max-width: 470px; display: block; margin: auto; 
-      padding: 16px; background: #25D366; color: white; 
-      border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer;
+      padding: 10px; background: #25D366; color: white; 
+      border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer;
     }
     
     .btn-limpar {
-      width: 90%; max-width: 470px; display: block; margin: 10px auto 0 auto; 
-      padding: 12px; background: transparent; color: #d32f2f; 
-      border: 1px solid #d32f2f; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer;
+      width: 90%; max-width: 470px; display: block; margin: 4px auto 0 auto; 
+      padding: 6px; background: transparent; color: #d32f2f; 
+      border: 1px solid #d32f2f; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;
     }
     
-    .obs-container { width: 90%; max-width: 470px; margin: 0 auto 10px auto; }
-    .obs-container textarea { font-size: 14px; padding: 8px; resize: none; }
+    .obs-container { width: 90%; max-width: 470px; margin: 0 auto 5px auto; }
+    .obs-container label { font-size: 11px; }
+    .obs-container textarea { font-size: 12px; padding: 5px; resize: none; }
 
     .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); }
-    .modal-content { background: white; margin: 15% auto; padding: 20px; border-radius: 12px; width: 85%; max-width: 400px; max-height: 85vh; overflow-y: auto; }
-    .revisao-texto { white-space: pre-wrap; background: #f4f4f4; padding: 12px; border-radius: 6px; font-size: 13px; margin: 15px 0; border: 1px solid #ddd; }
-    .modal-btns { display: flex; gap: 10px; }
-    .btn-confirmar { flex: 2; background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    .btn-corrigir { flex: 1; background: #666; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .modal-content { background: white; margin: 10% auto; padding: 15px; border-radius: 10px; width: 85%; max-width: 400px; max-height: 85vh; overflow-y: auto; }
+    .revisao-texto { white-space: pre-wrap; background: #f4f4f4; padding: 10px; border-radius: 6px; font-size: 12px; margin: 10px 0; border: 1px solid #ddd; }
+    .modal-btns { display: flex; gap: 8px; }
+    .btn-confirmar { flex: 2; background: #25D366; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
+    .btn-corrigir { flex: 1; background: #666; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -131,7 +136,7 @@
     <div class="header-info">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <span><b>📅</b> <span id="dataHoraAtual"></span></span>
-        <select id="selectConferente" style="width: 55%; padding: 5px; font-size: 13px;">
+        <select id="selectConferente" style="width: 55%; padding: 4px; font-size: 12px;">
           <option value="">👤 Conferente...</option>
         </select>
       </div>
@@ -172,7 +177,7 @@
 
 <div class="footer-fixed">
   <div class="obs-container">
-    <label style="font-weight:bold; font-size:13px; color: #555;">📝 Observações:</label>
+    <label style="font-weight:bold; color: #555;">📝 Observações:</label>
     <textarea id="obsGeral" rows="1" placeholder="Notas da carga..."></textarea>
   </div>
   <button class="btn-enviar" onclick="abrirRevisao()">📋 Revisar e Enviar</button>
@@ -182,7 +187,7 @@
 
 <div id="modalRevisao" class="modal">
   <div class="modal-content">
-    <h3 style="margin-top:0">Revisar Relatório</h3>
+    <h3 style="margin-top:0; font-size: 16px;">Revisar Relatório</h3>
     <div id="corpoRevisao" class="revisao-texto"></div>
 
     <div class="modal-btns">
@@ -277,7 +282,6 @@
         throw new Error("Erro interno na planilha: " + data.mensagem);
       }
 
-      // Popula select de conferentes
       select.innerHTML = '<option value="">👤 Conferente...</option>';
       if (data.conferentes && Array.isArray(data.conferentes)) {
         data.conferentes.forEach(nome => {
@@ -288,7 +292,6 @@
         });
       }
 
-      // Popula produtos
       dadosProdutos = data.produtos || [];
       
       if (dadosProdutos.length === 0) {
@@ -300,7 +303,7 @@
       dadosProdutos.forEach((p, index) => {
         htmlTemporario += `
           <div class="item-row" id="row-${index}">
-            <div style="flex:1"><b>${p.codigo}</b><br><small>${p.nome}</small></div>
+            <div style="flex:1; padding-right:5px;"><b>${p.codigo}</b><br><small style="font-size:11px; color:#555;">${p.nome}</small></div>
             <div class="inputs-group">
               <div class="input-box box-estoque"><label>Estoque</label><input type="number" min="0" id="estoque-${index}" oninput="checkInput(${index})" placeholder="0"></div>
               <div class="input-box box-entrada"><label>Entrada</label><input type="number" min="0" id="ent-${index}" oninput="checkInput(${index})" placeholder="0"></div>
@@ -316,10 +319,10 @@
     } catch (e) { 
       console.error("Erro no carregamento:", e);
       lista.innerHTML = `
-        <div style="text-align:center; padding:15px; color:#d32f2f; background: #fff3f3; border-radius: 8px; border: 1px solid #ffcdd2; margin: 10px;">
-          <p style="margin-top:0"><b>⚠️ Erro ao ler dados da planilha:</b></p>
-          <p style="font-size:12px; text-align:left; background:white; padding:8px; border-radius:4px; word-break:break-word;">${e.message}</p>
-          <button onclick="carregarDados()" style="padding:8px 16px; background:#075E54; color:white; border:none; border-radius:4px; cursor:pointer;">Tentar Novamente</button>
+        <div style="text-align:center; padding:12px; color:#d32f2f; background: #fff3f3; border-radius: 8px; border: 1px solid #ffcdd2; margin: 10px;">
+          <p style="margin-top:0; font-size:13px;"><b>⚠️ Erro ao ler dados da planilha:</b></p>
+          <p style="font-size:11px; text-align:left; background:white; padding:8px; border-radius:4px; word-break:break-word;">${e.message}</p>
+          <button onclick="carregarDados()" style="padding:6px 12px; background:#075E54; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px;">Tentar Novamente</button>
         </div>`; 
     }
   }
