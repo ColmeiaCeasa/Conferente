@@ -193,8 +193,7 @@
 </div>
 
 <script>
-  // SUBSTITUA PELA URL DA SUA NOVA IMPLANTAÇÃO DO APPS SCRIPT
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4vwWK299JgjU717didypB7qoE9qXeLi-9R7-BzhdAPZPomdvqHfGzEYT4Gxq3NGg1/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVzqQ1W5Zr4eut65ssGjZ2KVaCGoPczfAMlHG7ZvbMpJbc48YP047Q7MQ4twP_NMNV/exec";
 
   let dadosProdutos = [];
   let mensagemFinal = "";
@@ -265,13 +264,20 @@
         redirect: "follow"
       });
 
-      if (!response.ok) {
-        throw new Error(`Status de resposta: ${response.status}`);
+      const textoResposta = await response.text();
+      let data;
+      
+      try {
+        data = JSON.parse(textoResposta);
+      } catch(err) {
+        throw new Error("A resposta da planilha não veio em formato JSON. Verifique se a permissão de acesso no Apps Script está como 'Qualquer pessoa'.");
       }
 
-      const data = await response.json();
-      
-      // Limpa e popula select de conferentes
+      if (data.status === "erro") {
+        throw new Error("Erro interno na planilha: " + data.mensagem);
+      }
+
+      // Popula select de conferentes
       select.innerHTML = '<option value="">👤 Conferente...</option>';
       if (data.conferentes && Array.isArray(data.conferentes)) {
         data.conferentes.forEach(nome => {
@@ -282,7 +288,7 @@
         });
       }
 
-      // Popula a lista de produtos de forma OTIMIZADA
+      // Popula produtos
       dadosProdutos = data.produtos || [];
       
       if (dadosProdutos.length === 0) {
@@ -291,7 +297,6 @@
       }
 
       let htmlTemporario = "";
-      
       dadosProdutos.forEach((p, index) => {
         htmlTemporario += `
           <div class="item-row" id="row-${index}">
@@ -311,9 +316,9 @@
     } catch (e) { 
       console.error("Erro no carregamento:", e);
       lista.innerHTML = `
-        <div style="text-align:center; padding:20px; color:#d32f2f;">
-          <p><b>⚠️ Erro ao carregar dados!</b></p>
-          <small>Verifique se o Apps Script foi implantado como <b>"Qualquer pessoa"</b> e se uma <b>Nova versão</b> foi gerada.</small><br><br>
+        <div style="text-align:center; padding:15px; color:#d32f2f; background: #fff3f3; border-radius: 8px; border: 1px solid #ffcdd2; margin: 10px;">
+          <p style="margin-top:0"><b>⚠️ Erro ao ler dados da planilha:</b></p>
+          <p style="font-size:12px; text-align:left; background:white; padding:8px; border-radius:4px; word-break:break-word;">${e.message}</p>
           <button onclick="carregarDados()" style="padding:8px 16px; background:#075E54; color:white; border:none; border-radius:4px; cursor:pointer;">Tentar Novamente</button>
         </div>`; 
     }
