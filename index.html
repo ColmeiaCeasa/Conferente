@@ -194,7 +194,7 @@
 
 <script>
   // SUBSTITUA PELA URL DA SUA NOVA IMPLANTAÇÃO DO APPS SCRIPT
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxG-yhZBx2hFTRAGtJB4janzWijUHeAnHs1PsRsJFB4gJrlcDoYycQ8EYpOZbB_DfsS/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxn1BWsaHG_SZr-uFnTJXKcBp2qV7HtxtcU3lb6VZP1Pkn-z2Rl8bXhwtqjaLewxMtU/exec";
 
   let dadosProdutos = [];
   let mensagemFinal = "";
@@ -260,7 +260,6 @@
     try {
       lista.innerHTML = `<p style="text-align:center;">⏳ Carregando produtos...</p>`;
       
-      // Ajuste com { method: "GET", redirect: "follow" } para compatibilidade com celulares e webviews
       const response = await fetch(SCRIPT_URL + "?get=produtos", {
         method: "GET",
         redirect: "follow"
@@ -283,17 +282,18 @@
         });
       }
 
-      // Popula a lista de produtos
+      // Popula a lista de produtos de forma OTIMIZADA
       dadosProdutos = data.produtos || [];
-      lista.innerHTML = '';
       
       if (dadosProdutos.length === 0) {
         lista.innerHTML = '<p style="text-align:center;">Nenhum produto encontrado na planilha.</p>';
         return;
       }
 
+      let htmlTemporario = "";
+      
       dadosProdutos.forEach((p, index) => {
-        lista.innerHTML += `
+        htmlTemporario += `
           <div class="item-row" id="row-${index}">
             <div style="flex:1"><b>${p.codigo}</b><br><small>${p.nome}</small></div>
             <div class="inputs-group">
@@ -305,6 +305,9 @@
             </div>
           </div>`;
       });
+      
+      lista.innerHTML = htmlTemporario;
+
     } catch (e) { 
       console.error("Erro no carregamento:", e);
       lista.innerHTML = `
